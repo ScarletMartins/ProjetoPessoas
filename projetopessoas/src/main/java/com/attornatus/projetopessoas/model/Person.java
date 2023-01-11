@@ -1,43 +1,50 @@
 package com.attornatus.projetopessoas.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
 
 @Entity
-@Table(name = "tb_pessoa")
-public class Pessoa {
+@Table(name = "tb_person")
+public class Person {
 	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
+	@Column(nullable = false)
 	private String name;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-	private Date dataNascimento;
+	@Column(nullable = false)
+	private LocalDate birthDate;
 	
-	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties("pessoa")
-	private List<Endereco> endereco;
+	@OneToMany(mappedBy = "person")
+	@JsonIgnore
+	private List<Address> address;
+	
+	public Person() {	
+	}
+
+	public Person(Long id, @NotBlank String name, LocalDate birthDate, List<Address> address) {
+		this.id = id;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.address = address;
+	}
 
 	public Long getId() {
 		return id;
@@ -55,20 +62,20 @@ public class Pessoa {
 		this.name = name;
 	}
 
-	public Date getDataNascimento() {
-		return dataNascimento;
+	public LocalDate getBirthDate() {
+		return birthDate;
 	}
 
-	public void setDataNascimento(Date dataNascimento) {
-		this.dataNascimento = dataNascimento;
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
 	}
 
-	public List<Endereco> getEndereco() {
-		return endereco;
+	public List<Address> getAddress() {
+		return address;
 	}
 
-	public void setEndereco(List<Endereco> endereco) {
-		this.endereco = endereco;
+	public void setAddress(List<Address> address) {
+		this.address = address;
 	}
 	
 }

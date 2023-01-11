@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.attornatus.projetopessoas.model.Pessoa;
+import com.attornatus.projetopessoas.model.Person;
 
 @Repository
-public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
+public interface PersonRepository extends JpaRepository<Person, Long> {
 
-	public List<Pessoa> findAllByNameContainingIgnoreCase(@Param("nome") String name);
+	public List<Person> findAllByNameContainingIgnoreCase(@Param("name") String name);
 }

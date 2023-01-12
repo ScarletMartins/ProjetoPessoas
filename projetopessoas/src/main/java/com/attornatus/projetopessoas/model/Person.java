@@ -38,6 +38,12 @@ public class Person {
 	
 	public Person() {	
 	}
+	
+	public Person(Long id, @NotBlank String name, LocalDate birthDate) {
+		this.id = id;
+		this.name = name;
+		this.birthDate = birthDate;
+	}
 
 	public Person(Long id, @NotBlank String name, LocalDate birthDate, List<Address> address) {
 		this.id = id;

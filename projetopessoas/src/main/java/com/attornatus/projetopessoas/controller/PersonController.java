@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.attornatus.projetopessoas.model.Person;
 import com.attornatus.projetopessoas.repository.PersonRepository;
+import com.attornatus.projetopessoas.service.PersonService;
 
 import jakarta.validation.Valid;
 
@@ -30,6 +31,9 @@ public class PersonController {
 	
 	@Autowired
 	private PersonRepository personRepository;
+	
+	@Autowired
+	private PersonService service;
 
 	@GetMapping //Listagem de todas as pessoas
 	public ResponseEntity<List<Person>> getAll() {
@@ -48,13 +52,14 @@ public class PersonController {
 		return ResponseEntity.ok(personRepository.findAllByNameContainingIgnoreCase(name));
 	}
 	
-	@PostMapping
+	@PostMapping("/add")
 	public ResponseEntity<Person> post(@Valid @RequestBody Person person) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(personRepository.save(person));
+		
+		return service.addNewPerson(person).map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response))
+				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
-	@PutMapping
+	@PutMapping("/edit")
 	public ResponseEntity<Person> put(@Valid @RequestBody Person person){
 		return personRepository.findById(person.getId())
 			.map(resposta -> ResponseEntity.status(HttpStatus.OK)

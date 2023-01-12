@@ -41,13 +41,13 @@ public class AddressController {
 		return ResponseEntity.ok(addressRepository.findAllByPersonId(id));
 	}
 	
-	@PostMapping
+	@PostMapping("/add")
 	public ResponseEntity<Address> post(@Valid @RequestBody Address address){
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(addressRepository.save(address));
 	}
 	
-	@PutMapping
+	@PutMapping("/edit")
 	public ResponseEntity<Address> put(@Valid @RequestBody Address address){
 		return addressRepository.findById(address.getId()).map(resposta -> ResponseEntity.status(HttpStatus.CREATED)
 				.body(addressRepository.save(address)))

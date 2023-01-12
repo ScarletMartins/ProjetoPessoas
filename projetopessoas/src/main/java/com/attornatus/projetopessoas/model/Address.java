@@ -10,8 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "tb_address")
@@ -25,10 +23,10 @@ public class Address {
 	private String street;
 	
 	@Column(nullable = false)
-	private Long zipCode;
+	private int zipCode;
 	
 	@Column(nullable = false)
-	private Long number;
+	private int number;
 	
 	@Column(nullable = false)
 	private String city;
@@ -43,8 +41,17 @@ public class Address {
 	
 	public Address() {
 	}
+	
+	public Address(Long id, String street,int zipCode, int number, String city, boolean mainAddress) {
+		this.id = id;
+		this.street = street;
+		this.zipCode = zipCode;
+		this.number = number;
+		this.city = city;
+		this.mainAddress = mainAddress;
+	}
 
-	public Address(Long id, @NotBlank String street, @NotNull Long zipCode, @NotNull Long number, @NotBlank String city,
+	public Address(Long id, String street, int zipCode, int number, String city,
 			boolean mainAddress, Person person) {
 		this.id = id;
 		this.street = street;
@@ -73,19 +80,19 @@ public class Address {
 		this.street = street;
 	}
 
-	public Long getZipCode() {
+	public int getZipCode() {
 		return zipCode;
 	}
 
-	public void setZipCode(Long zipCode) {
+	public void setZipCode(int zipCode) {
 		this.zipCode = zipCode;
 	}
 
-	public Long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(Long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 

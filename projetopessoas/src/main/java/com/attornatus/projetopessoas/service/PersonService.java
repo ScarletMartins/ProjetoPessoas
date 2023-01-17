@@ -17,9 +17,6 @@ public class PersonService {
 	private PersonRepository personRepository;
 
 	public Optional<Person> addNewPerson(Person person) {
-//		if (personRepository.findByName(person.getName()).isPresent())
-//			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pessoa já cadastrada", null);
-
 		return Optional.of(personRepository.save(person));
 	}
 

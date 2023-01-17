@@ -35,7 +35,7 @@ public class PersonController {
 	@Autowired
 	private PersonService service;
 
-	@GetMapping //Listagem de todas as pessoas
+	@GetMapping
 	public ResponseEntity<List<Person>> getAll() {
 		return ResponseEntity.ok(personRepository.findAll());
 	}
@@ -44,24 +44,19 @@ public class PersonController {
 	public ResponseEntity<Person> getById(@PathVariable Long id) {
 		return personRepository.findById(id)
 			.map(resposta -> ResponseEntity.ok(resposta))
-			.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-	}
-	
-	@GetMapping("/person/{name}")
-	public ResponseEntity<List<Person>> getByName(@PathVariable String name){
-		return ResponseEntity.ok(personRepository.findAllByNameContainingIgnoreCase(name));
+			.orElseThrow(() -> new IllegalArgumentException("ID " + id + " NOT FOUND"));
 	}
 	
 	@PostMapping("/add")
 	public ResponseEntity<Person> post(@Valid @RequestBody Person person) {
-		
-		return service.addNewPerson(person).map(response -> ResponseEntity.status(HttpStatus.CREATED).body(response))
+		return service.addNewPerson(person).map(response -> ResponseEntity.status(HttpStatus.CREATED)
+				.body(response))
 				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
 	}
 	
 	@PutMapping("/edit")
 	public ResponseEntity<Person> put(@Valid @RequestBody Person person){
-		return personRepository.findById(person.getId())
+		return service.editPerson(person)
 			.map(resposta -> ResponseEntity.status(HttpStatus.OK)
 				.body(personRepository.save(person)))
 			.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());

@@ -3,14 +3,12 @@ package com.attornatus.projetopessoas.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -26,7 +24,6 @@ import com.attornatus.projetopessoas.service.PersonService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PersonControllerTest {
 
 	@Autowired
@@ -38,20 +35,17 @@ public class PersonControllerTest {
 	@Autowired
 	private PersonRepository personRepository;
 	
-	@BeforeAll
+	@BeforeEach
 	void start() {
 		personRepository.deleteAll();
 	}
 	
-	LocalDate date = LocalDate.of(1995, 9, 29);
-	
 	@Test
-	@Order(1)
 	@DisplayName("Add a new person")
 	public void addNewPerson() {
 	
 	
-	HttpEntity<Person> request = new HttpEntity<Person>(new Person(0L, "Scarlet Martins", date));
+	HttpEntity<Person> request = new HttpEntity<Person>(new Person(0L, "Scarlet Martins", LocalDate.of(1995, 9, 29)));
 	
 	ResponseEntity<Person> response = testRestTemplate
 			.exchange("/person/add", HttpMethod.POST, request, Person.class);
@@ -63,19 +57,54 @@ public class PersonControllerTest {
 	}
 	
 	@Test
-	@Order(2)
-	@DisplayName("Do not allow duplicate person")
-	public void doNotAllowDuplicatePerson() {
-	
-		personService.addNewPerson(new Person(0L, "Scarlet Martins", date));
+	@DisplayName("Edit a person")
+	public void editAPerson() {
 		
-		HttpEntity<Person> request = new HttpEntity<Person>(new Person(0L, "Scarlet Martins", date));
+		Optional<Person> personCreate = personService.addNewPerson(new Person(0L, "Scarlet Martins", LocalDate.of(1995, 9, 29)));
+		
+		Person personUpdate = new Person(personCreate.get().getId(), "Scarlet Martins", LocalDate.of(1995, 9, 29));
+		
+		HttpEntity<Person> request = new HttpEntity<Person>(personUpdate);
 		
 		ResponseEntity<Person> response = testRestTemplate
-				.exchange("/person/add", HttpMethod.POST, request, Person.class);
+				.withBasicAuth("admin", "123")
+				.exchange("/person/edit", HttpMethod.PUT, request, Person.class);
 		
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(request.getBody().getName(), response.getBody().getName());
+		assertEquals(request.getBody().getBirthDate(), response.getBody().getBirthDate());
 		
 	}
+	
+	@Test
+	@DisplayName("List Person")
+	public void listPersons() {
+		
+		personService.addNewPerson(new Person(0L, "Scarlet Martins", LocalDate.of(1995, 9, 29)));
+		
+		personService.addNewPerson(new Person(0L, "John Brandão", LocalDate.of(1995, 9, 29)));
+		
+		ResponseEntity<String> response = testRestTemplate
+				.withBasicAuth("root", "root")
+				.exchange("/person", HttpMethod.GET, null, String.class);
+		
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }

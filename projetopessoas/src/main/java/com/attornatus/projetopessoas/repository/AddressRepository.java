@@ -12,10 +12,8 @@ import com.attornatus.projetopessoas.model.Address;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long>{
 	
-	public Optional<Address> findByCity(String city);
-	
 	public List<Address> findAllByPersonId(@Param("id") Long id);
-
-	public List<Address> findByMainAddress(boolean mainAddress);
+	
+	public Optional<List<Address>> findAddressById(Long id);
 
 }

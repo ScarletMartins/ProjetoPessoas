@@ -1,6 +1,7 @@
 package com.attornatus.projetopessoas.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,7 +35,7 @@ public class Person {
 	
 	@OneToMany(mappedBy = "person")
 	@JsonIgnore
-	private List<Address> address;
+	private List<Address> address = new ArrayList<>();
 	
 	public Person() {	
 	}

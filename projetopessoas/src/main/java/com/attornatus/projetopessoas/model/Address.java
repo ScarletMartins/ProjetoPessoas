@@ -32,10 +32,10 @@ public class Address {
 	private String city;
 	
 	@Column(nullable = false)
-	private boolean mainAddress;
+	private boolean mainAddress = true;
 	
 	@ManyToOne
-	@JsonIgnoreProperties("adress")
+	@JsonIgnoreProperties("address")
 	@JoinColumn(referencedColumnName = "id")
 	private Person person;
 	
@@ -52,16 +52,15 @@ public class Address {
 	}
 
 	public Address(Long id, String street, int zipCode, int number, String city,
-			boolean mainAddress, Person person) {
+			boolean mainAddress, Person personId) {
 		this.id = id;
 		this.street = street;
 		this.zipCode = zipCode;
 		this.number = number;
 		this.city = city;
 		this.mainAddress = mainAddress;
-		this.person = person;
+		this.person = personId;
 	}
-
 
 
 	public Long getId() {
@@ -119,5 +118,6 @@ public class Address {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+
 
 }
